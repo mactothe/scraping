@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://news.daum.net",
+    "method": "get",
+    "selectors": [
+      {
+        "query": "#cSub > .feature_home > ul.list_issue > li > .item_issue > a"
+      }
+    ],
+    "linkAttr": "href",
+    "child": {
+      "selectors": [
+        {
+          "query": "#cSub > .head_view > .tit_view",
+          "keyName": "title"
+        },
+        {
+          "query": "#harmonyContainer",
+          "keyName": "content"
+        }
+      ]
+    }
+  },
+  {
+    "url": "https://news.naver.com",
+    "method": "get",
+    "selectors": [
+      {
+        "query": ".section.section_wide > #ranking_105 > ul.section_list_ranking li > a"
+      }
+    ],
+    "needAttr": "href",
+    "linkAttr": "href",
+    "child": {
+      "selectors": [
+        {
+          "query": "#main_content > .article_header > .article_info > #articleTitle",
+          "keyName": "title"
+        },
+        {
+          "query": "#main_content > .article_body > #articleBodyContents",
+          "keyName": "content"
+        }
+      ]
+    }
+  }
+]
