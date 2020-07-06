@@ -2,6 +2,7 @@ package kr.whoi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.XML;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -187,7 +188,6 @@ public class Scraping {
         for (Map scrpInfo : scrpInfoList) {
             result.add(scrpInfoParse(scrpInfo));
         }
-        System.out.println(objectToJsonString(result));
         return result;
     }
 
@@ -218,6 +218,8 @@ public class Scraping {
                 if (selectors.equals("")) {
                     new Exception();
                 }
+            } else if (scrpInfo.get("selectors").getClass().getSimpleName().toLowerCase().indexOf("map") >= 0) {
+                selectors = (Map) scrpInfo.get("selectors");
             } else {
                 new Exception();
             }
@@ -254,6 +256,14 @@ public class Scraping {
             }
         }
 
+        String docType = null;
+        if (scrpInfo.get("docType") != null) {
+            docType = (String) scrpInfo.get("docType");
+            if (docType.equals("")) {
+                docType = null;
+            }
+        }
+
         Map child = null;
         if (scrpInfo.get("child") != null) {
             child = (Map) scrpInfo.get("child");
@@ -281,7 +291,54 @@ public class Scraping {
                             result.add(el.attr(needAttr));
                         }
                     } else {
-                        result.add(el.text());
+                        if(docType.toLowerCase().equals("xml")){
+                            result.add(XML.toJSONObject(el.toString()));
+                        } else {
+                            result.add(el.text());
+                        }
+                    }
+                }
+            } else if (selectors.getClass().getSimpleName().toLowerCase().indexOf("map") >= 0){
+                Map<String, String> map = new HashMap();
+                Map selector = ((Map) selectors);
+                Elements els = doc.select((String) ((Map) selectors).get("query"));
+                for (Element el : els) {
+                    if (needAttr != null || linkAttr != null) {
+                        if (linkAttr != null) {
+                            linkList.add(el.attr(linkAttr));
+                        } else {
+                            if (selector.get("keyName") != null) {
+                                if (selector.get("keyName").equals("")) {
+                                    result.add(el.attr(needAttr));
+                                } else {
+                                    map.put((String) selector.get("keyName"), el.attr(needAttr));
+                                }
+                            } else {
+                                result.add(el.attr(needAttr));
+                            }
+                        }
+                    } else {
+                        if (selector.get("keyName") != null) {
+                            if (selector.get("keyName").equals("")) {
+                                if(docType.toLowerCase().equals("xml")){
+                                    result.add(XML.toJSONObject(el.toString()));
+                                } else {
+                                    result.add(el.text());
+                                }
+                            } else {
+                                map.put((String) selector.get("keyName"), el.text());
+                            }
+                        } else {
+                            if(docType.toLowerCase().equals("xml")){
+                                if(selector.get("inner").equals("true")) {
+                                    result.add(XML.toJSONObject(el.childNodes().toString()));
+                                } else {
+                                    result.add(XML.toJSONObject(el.toString()));
+                                }
+                            } else {
+                                result.add(el.text());
+                            }
+                        }
                     }
                 }
             } else {
@@ -306,12 +363,24 @@ public class Scraping {
                         } else {
                             if (selector.get("keyName") != null) {
                                 if (selector.get("keyName").equals("")) {
-                                    result.add(el.text());
+                                    if(docType.toLowerCase().equals("xml")){
+                                        result.add(XML.toJSONObject(el.toString()));
+                                    } else {
+                                        result.add(el.text());
+                                    }
                                 } else {
                                     map.put((String) selector.get("keyName"), el.text());
                                 }
                             } else {
-                                result.add(el.text());
+                                if(docType.toLowerCase().equals("xml")){
+                                    if(selector.get("inner").equals("true")) {
+                                        result.add(XML.toJSONObject(el.childNodes().toString()));
+                                    } else {
+                                        result.add(XML.toJSONObject(el.toString()));
+                                    }
+                                } else {
+                                    result.add(el.text());
+                                }
                             }
                         }
                     }
@@ -355,6 +424,6 @@ public class Scraping {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(scrpInfoParse(scrpInfoList));
+        System.out.println(scrpInfoParse(scrpInfoList.get(0)));
     }
 }
