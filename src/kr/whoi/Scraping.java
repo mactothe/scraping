@@ -82,7 +82,6 @@ public class Scraping {
      * @param url       scraping을 하기위한 URL 주소
      * @param method    Request method(get, post)
      * @return org.jsoup.nodes.Document
-     * todo: method가 POST일 경우 Parameter에 대한 정의 필요
      */
     public static Document getDom(String url, String method) {
         String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36";
@@ -99,10 +98,44 @@ public class Scraping {
         }
         Document doc = null;
         try {
-            if(method == null || method.equals("")){
-                method = "get";
+            if(method == null || method.equals("") || method.toLowerCase().equals("get")){
+                doc = Jsoup.connect(url).userAgent(userAgent).method(Connection.Method.GET).ignoreContentType(true).get();
+            } else {
+                doc = Jsoup.connect(url).userAgent(userAgent).method(Connection.Method.POST).ignoreContentType(true).post();
             }
-            doc = Jsoup.connect(url).userAgent(userAgent).method(method.equals("get") ? Connection.Method.GET : Connection.Method.POST).ignoreContentType(true).get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return doc;
+    }
+
+    /**
+     * 연결된 URL에서 Document를 가져오는 메소드
+     * @param url       scraping을 하기위한 URL 주소
+     * @param method    Request method(get, post)
+     * @param params    parameter
+     * @return org.jsoup.nodes.Document
+     */
+    public static Document getDom(String url, String method, Map params) {
+        String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36";
+
+        if (url.contains("https://")) {
+            try {
+                setSSL();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (KeyManagementException e) {
+                e.printStackTrace();
+            }
+        }
+        Document doc = null;
+        try {
+            if(method == null || method.equals("") || method.toLowerCase().equals("get")){
+                doc = Jsoup.connect(url).userAgent(userAgent).method(Connection.Method.GET).ignoreContentType(true).data(params).get();
+            } else {
+                doc = Jsoup.connect(url).userAgent(userAgent).method(Connection.Method.POST).ignoreContentType(true).data(params).post();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -200,6 +233,11 @@ public class Scraping {
             }
         }
 
+        Map params = null;
+        if(scrpInfo.get("params") != null) {
+            params = (Map) scrpInfo.get("params");
+        }
+
         String needAttr = null;
         if (scrpInfo.get("needAttr") != null) {
             needAttr = (String) scrpInfo.get("needAttr");
@@ -221,7 +259,13 @@ public class Scraping {
             child = (Map) scrpInfo.get("child");
         }
 
-        Document doc = getDom(url, method);
+
+        Document doc = null;
+        if(params != null) {
+            doc = getDom(url, method, params);
+        } else {
+            doc = getDom(url, method);
+        }
         String hostLocation = doc.location().split("/")[0] + "//" + doc.location().split("/")[2];
 
         List<String> linkList = new ArrayList();
