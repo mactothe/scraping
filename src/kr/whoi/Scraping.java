@@ -27,7 +27,7 @@ public class Scraping {
      * @param jsonString JSON형태의 String
      * @return java.lang.Object
      */
-    public static Object jsonStringConverter(Object obj, String jsonString) {
+    public Object jsonStringConverter(Object obj, String jsonString) {
         ObjectMapper om = new ObjectMapper();
         try {
             return om.readValue(jsonString, obj.getClass());
@@ -43,7 +43,7 @@ public class Scraping {
      * @param obj Map 또는 List 형태의 객체
      * @return java.lang.String
      */
-    public static String objectToJsonString(Object obj) {
+    private String objectToJsonString(Object obj) {
         ObjectMapper om = new ObjectMapper();
         String rString = "";
         try {
@@ -61,7 +61,7 @@ public class Scraping {
      * @param selector CSS selctor 형태의 String
      * @return java.lang.Object
      */
-    public static Object simpleScraping(String url, String selector) {
+    private Object simpleScraping(String url, String selector) {
 
         List<String> result = new LinkedList();
 
@@ -88,7 +88,7 @@ public class Scraping {
      * @param method Request method(get, post)
      * @return org.jsoup.nodes.Document
      */
-    public static Document getDom(String url, String method) {
+    private Document getDom(String url, String method) {
         String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36";
 
 
@@ -123,7 +123,7 @@ public class Scraping {
      * @param params parameter
      * @return org.jsoup.nodes.Document
      */
-    public static Document getDom(String url, String method, Map params) {
+    private Document getDom(String url, String method, Map params) {
         String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36";
 
         if (url.contains("https://")) {
@@ -155,7 +155,7 @@ public class Scraping {
      * @throws NoSuchAlgorithmException
      * @throws KeyManagementException
      */
-    public static void setSSL() throws NoSuchAlgorithmException, KeyManagementException {
+    private void setSSL() throws NoSuchAlgorithmException, KeyManagementException {
         TrustManager[] trustAllCerts = new TrustManager[]{
                 new X509TrustManager() {
                     @Override
@@ -190,7 +190,7 @@ public class Scraping {
      * @param scrpInfoList scraping을 위한 정보를 가진 List
      * @return java.util.List
      */
-    public static List scrpInfoParse(List<Map<String, Object>> scrpInfoList) {
+    public List scrpInfoParse(List<Map<String, Object>> scrpInfoList) {
         List result = new ArrayList();
         for (Map scrpInfo : scrpInfoList) {
             result.add(scrpInfoParse(scrpInfo));
@@ -205,7 +205,7 @@ public class Scraping {
      * @param scrpInfo scraping을 위한 정보를 가진 Map
      * @return java.util.List
      */
-    public static List scrpInfoParse(Map scrpInfo) {
+    public List scrpInfoParse(Map scrpInfo) {
         List result = new ArrayList();
         String url = null;
         if (scrpInfo.get("url") != null) {
@@ -433,29 +433,5 @@ public class Scraping {
             }
         }
         return result;
-    }
-
-
-    public static void main(String[] args) {
-        List<Map<String, Object>> scrpInfoList = null;
-        try {
-            if (args[0].equals("") || args[0].equals("false")) {
-                String text = "";
-                File file = new File(args[1]);
-                FileReader filereader = new FileReader(file);
-                BufferedReader bufReader = new BufferedReader(filereader);
-                String line = "";
-                while ((line = bufReader.readLine()) != null) {
-                    text += line;
-                }
-                bufReader.close();
-                scrpInfoList = (List) jsonStringConverter(new ArrayList(), text);
-            } else {
-                scrpInfoList = (List) jsonStringConverter(new ArrayList(), args[0]);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println(scrpInfoParse(scrpInfoList));
     }
 }
