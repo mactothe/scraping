@@ -22,8 +22,9 @@ public class Scraping {
 
     /**
      * JSON형태의 String을 Object형태로 변경해주는 메소드
-     * @param obj           Map 또는 List 형태의 객체
-     * @param jsonString    JSON형태의 String
+     *
+     * @param obj        Map 또는 List 형태의 객체
+     * @param jsonString JSON형태의 String
      * @return java.lang.Object
      */
     public static Object jsonStringConverter(Object obj, String jsonString) {
@@ -38,7 +39,8 @@ public class Scraping {
 
     /**
      * Object형태의 데이터를 JSON형태의 String으로 변경해주는 메소드
-     * @param obj   Map 또는 List 형태의 객체
+     *
+     * @param obj Map 또는 List 형태의 객체
      * @return java.lang.String
      */
     public static String objectToJsonString(Object obj) {
@@ -54,8 +56,9 @@ public class Scraping {
 
     /**
      * URL과 CSS Selector로 단순하게 원하는 부분을 Scraping하는 메소드
-     * @param url       scraping을 하기위한 URL 주소
-     * @param selector  CSS selctor 형태의 String
+     *
+     * @param url      scraping을 하기위한 URL 주소
+     * @param selector CSS selctor 형태의 String
      * @return java.lang.Object
      */
     public static Object simpleScraping(String url, String selector) {
@@ -80,8 +83,9 @@ public class Scraping {
 
     /**
      * 연결된 URL에서 Document를 가져오는 메소드
-     * @param url       scraping을 하기위한 URL 주소
-     * @param method    Request method(get, post)
+     *
+     * @param url    scraping을 하기위한 URL 주소
+     * @param method Request method(get, post)
      * @return org.jsoup.nodes.Document
      */
     public static Document getDom(String url, String method) {
@@ -99,7 +103,7 @@ public class Scraping {
         }
         Document doc = null;
         try {
-            if(method == null || method.equals("") || method.toLowerCase().equals("get")){
+            if (method == null || method.equals("") || method.toLowerCase().equals("get")) {
                 doc = Jsoup.connect(url).userAgent(userAgent).method(Connection.Method.GET).ignoreContentType(true).get();
             } else {
                 doc = Jsoup.connect(url).userAgent(userAgent).method(Connection.Method.POST).ignoreContentType(true).post();
@@ -113,9 +117,10 @@ public class Scraping {
 
     /**
      * 연결된 URL에서 Document를 가져오는 메소드
-     * @param url       scraping을 하기위한 URL 주소
-     * @param method    Request method(get, post)
-     * @param params    parameter
+     *
+     * @param url    scraping을 하기위한 URL 주소
+     * @param method Request method(get, post)
+     * @param params parameter
      * @return org.jsoup.nodes.Document
      */
     public static Document getDom(String url, String method, Map params) {
@@ -132,7 +137,7 @@ public class Scraping {
         }
         Document doc = null;
         try {
-            if(method == null || method.equals("") || method.toLowerCase().equals("get")){
+            if (method == null || method.equals("") || method.toLowerCase().equals("get")) {
                 doc = Jsoup.connect(url).userAgent(userAgent).method(Connection.Method.GET).ignoreContentType(true).data(params).get();
             } else {
                 doc = Jsoup.connect(url).userAgent(userAgent).method(Connection.Method.POST).ignoreContentType(true).data(params).post();
@@ -146,6 +151,7 @@ public class Scraping {
 
     /**
      * 신뢰할 수 없는 사이트에 대한 예외처리 메소드(인증서 무시)
+     *
      * @throws NoSuchAlgorithmException
      * @throws KeyManagementException
      */
@@ -180,7 +186,8 @@ public class Scraping {
 
     /**
      * scraping을 위한 정보를 가진 List 객체를 parse해주는 메소드
-     * @param scrpInfoList   scraping을 위한 정보를 가진 List
+     *
+     * @param scrpInfoList scraping을 위한 정보를 가진 List
      * @return java.util.List
      */
     public static List scrpInfoParse(List<Map<String, Object>> scrpInfoList) {
@@ -194,7 +201,8 @@ public class Scraping {
 
     /**
      * scraping을 위한 정보를 가진 Map 객체를 parse해주는 메소드
-     * @param scrpInfo   scraping을 위한 정보를 가진 Map
+     *
+     * @param scrpInfo scraping을 위한 정보를 가진 Map
      * @return java.util.List
      */
     public static List scrpInfoParse(Map scrpInfo) {
@@ -236,7 +244,7 @@ public class Scraping {
         }
 
         Map params = null;
-        if(scrpInfo.get("params") != null) {
+        if (scrpInfo.get("params") != null) {
             params = (Map) scrpInfo.get("params");
         }
 
@@ -271,7 +279,7 @@ public class Scraping {
 
 
         Document doc = null;
-        if(params != null) {
+        if (params != null) {
             doc = getDom(url, method, params);
         } else {
             doc = getDom(url, method);
@@ -291,14 +299,14 @@ public class Scraping {
                             result.add(el.attr(needAttr));
                         }
                     } else {
-                        if(docType.toLowerCase().equals("xml")){
+                        if (docType.toLowerCase().equals("xml")) {
                             result.add(XML.toJSONObject(el.toString()));
                         } else {
                             result.add(el.text());
                         }
                     }
                 }
-            } else if (selectors.getClass().getSimpleName().toLowerCase().indexOf("map") >= 0){
+            } else if (selectors.getClass().getSimpleName().toLowerCase().indexOf("map") >= 0) {
                 Map<String, String> map = new HashMap();
                 Map selector = ((Map) selectors);
                 Elements els = doc.select((String) ((Map) selectors).get("query"));
@@ -320,7 +328,7 @@ public class Scraping {
                     } else {
                         if (selector.get("keyName") != null) {
                             if (selector.get("keyName").equals("")) {
-                                if(docType.toLowerCase().equals("xml")){
+                                if (docType.toLowerCase().equals("xml")) {
                                     result.add(XML.toJSONObject(el.toString()));
                                 } else {
                                     result.add(el.text());
@@ -329,8 +337,8 @@ public class Scraping {
                                 map.put((String) selector.get("keyName"), el.text());
                             }
                         } else {
-                            if(docType.toLowerCase().equals("xml")){
-                                if(selector.get("inner").equals("true")) {
+                            if (docType.toLowerCase().equals("xml")) {
+                                if (selector.get("inner").equals("true")) {
                                     result.add(XML.toJSONObject(el.childNodes().toString()));
                                 } else {
                                     result.add(XML.toJSONObject(el.toString()));
@@ -342,7 +350,7 @@ public class Scraping {
                     }
                 }
             } else {
-                Map<String, String> map = new HashMap();
+                Map<String, Object> map = new HashMap();
                 for (Map selector : (List<Map>) selectors) {
                     Elements els = doc.select((String) selector.get("query"));
                     for (Element el : els) {
@@ -363,17 +371,41 @@ public class Scraping {
                         } else {
                             if (selector.get("keyName") != null) {
                                 if (selector.get("keyName").equals("")) {
-                                    if(docType.toLowerCase().equals("xml")){
+                                    if (docType.toLowerCase().equals("xml")) {
                                         result.add(XML.toJSONObject(el.toString()));
                                     } else {
                                         result.add(el.text());
                                     }
                                 } else {
-                                    map.put((String) selector.get("keyName"), el.text());
+                                    if (map.get(selector.get("keyName")) != null) {
+                                        List list = null;
+                                        if (map.get(selector.get("keyName")).getClass().getSimpleName().equals("String")) {
+                                            list = new ArrayList();
+                                            list.add(map.get(selector.get("keyName")));
+                                            map.put((String) selector.get("keyName"), list);
+                                        } else {
+                                            list = (List) map.get(selector.get("keyName"));
+                                        }
+                                        if(selector.get("attr") != null) {
+                                            list.add(el.attr((String)selector.get("attr")));
+                                        } else if (selector.get("ownText") != null && selector.get("ownText").equals("true")) {
+                                            list.add(el.ownText());
+                                        } else {
+                                            list.add(el.text());
+                                        }
+                                    } else {
+                                        if(selector.get("attr") != null) {
+                                            map.put((String) selector.get("keyName"), el.attr((String)selector.get("attr")));
+                                        } else if (selector.get("ownText") != null && selector.get("ownText").equals("true")) {
+                                            map.put((String) selector.get("keyName"), el.ownText());
+                                        } else {
+                                            map.put((String) selector.get("keyName"), el.text());
+                                        }
+                                    }
                                 }
                             } else {
-                                if(docType.toLowerCase().equals("xml")){
-                                    if(selector.get("inner").equals("true")) {
+                                if (docType.toLowerCase().equals("xml")) {
+                                    if (selector.get("inner").equals("true")) {
                                         result.add(XML.toJSONObject(el.childNodes().toString()));
                                     } else {
                                         result.add(XML.toJSONObject(el.toString()));
@@ -385,7 +417,7 @@ public class Scraping {
                         }
                     }
                 }
-                if(map.size() > 0) {
+                if (map.size() > 0) {
                     result.add(map);
                 }
             }
@@ -407,13 +439,13 @@ public class Scraping {
     public static void main(String[] args) {
         List<Map<String, Object>> scrpInfoList = null;
         try {
-            if(args[0].equals("") || args[0].equals("false")){
+            if (args[0].equals("") || args[0].equals("false")) {
                 String text = "";
                 File file = new File(args[1]);
                 FileReader filereader = new FileReader(file);
                 BufferedReader bufReader = new BufferedReader(filereader);
                 String line = "";
-                while((line = bufReader.readLine()) != null){
+                while ((line = bufReader.readLine()) != null) {
                     text += line;
                 }
                 bufReader.close();
@@ -424,6 +456,6 @@ public class Scraping {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(scrpInfoParse(scrpInfoList.get(0)));
+        System.out.println(scrpInfoParse(scrpInfoList));
     }
 }
