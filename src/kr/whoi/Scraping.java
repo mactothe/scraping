@@ -380,7 +380,7 @@ public class Scraping {
                                     if (map.get(selector.get("keyName")) != null) {
                                         List list = null;
                                         if (map.get(selector.get("keyName")).getClass().getSimpleName().equals("String")) {
-                                            list = new ArrayList();
+                                            list = new LinkedList();
                                             list.add(map.get(selector.get("keyName")));
                                             map.put((String) selector.get("keyName"), list);
                                         } else {
@@ -390,6 +390,8 @@ public class Scraping {
                                             list.add(el.attr((String)selector.get("attr")));
                                         } else if (selector.get("ownText") != null && selector.get("ownText").equals("true")) {
                                             list.add(el.ownText());
+                                        } else if (selector.get("html") != null && selector.get("html").equals("true")) {
+                                            list.add(el.html());
                                         } else {
                                             list.add(el.text());
                                         }
@@ -398,6 +400,8 @@ public class Scraping {
                                             map.put((String) selector.get("keyName"), el.attr((String)selector.get("attr")));
                                         } else if (selector.get("ownText") != null && selector.get("ownText").equals("true")) {
                                             map.put((String) selector.get("keyName"), el.ownText());
+                                        } else if (selector.get("html") != null && selector.get("html").equals("true")) {
+                                            map.put((String) selector.get("keyName"), el.html());
                                         } else {
                                             map.put((String) selector.get("keyName"), el.text());
                                         }
