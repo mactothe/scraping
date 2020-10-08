@@ -300,7 +300,7 @@ public class Scraping {
                         }
                     } else {
                         if (docType.toLowerCase().equals("xml")) {
-                            result.add(XML.toJSONObject(el.toString()));
+                            result.add(XML.toJSONObject(el.toString()).toMap());
                         } else {
                             result.add(el.text());
                         }
@@ -329,7 +329,7 @@ public class Scraping {
                         if (selector.get("keyName") != null) {
                             if (selector.get("keyName").equals("")) {
                                 if (docType.toLowerCase().equals("xml")) {
-                                    result.add(XML.toJSONObject(el.toString()));
+                                    result.add(XML.toJSONObject(el.toString()).toMap());
                                 } else {
                                     result.add(el.text());
                                 }
@@ -339,9 +339,9 @@ public class Scraping {
                         } else {
                             if (docType.toLowerCase().equals("xml")) {
                                 if (selector.get("inner").equals("true")) {
-                                    result.add(XML.toJSONObject(el.childNodes().toString()));
+                                    result.add(XML.toJSONObject(el.childNodes().toString()).toMap());
                                 } else {
-                                    result.add(XML.toJSONObject(el.toString()));
+                                    result.add(XML.toJSONObject(el.toString()).toMap());
                                 }
                             } else {
                                 result.add(el.text());
@@ -372,7 +372,7 @@ public class Scraping {
                             if (selector.get("keyName") != null) {
                                 if (selector.get("keyName").equals("")) {
                                     if (docType.toLowerCase().equals("xml")) {
-                                        result.add(XML.toJSONObject(el.toString()));
+                                        result.add(XML.toJSONObject(el.toString()).toMap());
                                     } else {
                                         result.add(el.text());
                                     }
@@ -412,7 +412,7 @@ public class Scraping {
                                     if (selector.get("inner").equals("true")) {
                                         result.add(XML.toJSONObject(el.childNodes().toString()));
                                     } else {
-                                        result.add(XML.toJSONObject(el.toString()));
+                                        result.add(XML.toJSONObject(el.toString()).toMap());
                                     }
                                 } else {
                                     result.add(el.text());
